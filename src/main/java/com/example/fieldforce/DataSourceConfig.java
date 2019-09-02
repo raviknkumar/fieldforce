@@ -40,6 +40,7 @@ public class DataSourceConfig {
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
+
         dataSource.setTestOnBorrow(true);
         dataSource.setTestWhileIdle(true);
         dataSource.setTestOnReturn(true);

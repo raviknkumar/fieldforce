@@ -1,0 +1,29 @@
+package com.example.fieldforce.serviceImpl;
+
+import com.example.fieldforce.converter.ShopConverter;
+import com.example.fieldforce.entity.Shop;
+import com.example.fieldforce.model.AuthUser;
+import com.example.fieldforce.model.ShopDto;
+import com.example.fieldforce.repositories.ShopRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ShopService {
+
+    @Autowired private ShopRepo shopRepo;
+    @Autowired private ShopConverter shopConverter;
+
+    public ShopDto addShop(ShopDto shopDto){
+        Shop shop = shopConverter.convertModelToEntity(shopDto);
+        return shopConverter.ConvertEntityToModel(shopRepo.save(shop));
+    }
+
+    public List<ShopDto> getShops(){
+        List<Shop> shops = shopRepo.findAll();
+        return shopConverter.ConvertEntityToModel(shops);
+    }
+
+}
