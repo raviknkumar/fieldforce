@@ -16,8 +16,8 @@ public class ShopService {
     @Autowired private ShopRepo shopRepo;
     @Autowired private ShopConverter shopConverter;
 
-    public ShopDto addShop(ShopDto shopDto){
-        Shop shop = shopConverter.convertModelToEntity(shopDto);
+    public ShopDto addShop(ShopDto shopDto, AuthUser user){
+        Shop shop = shopConverter.convertModelToEntity(shopDto, user);
         return shopConverter.ConvertEntityToModel(shopRepo.save(shop));
     }
 

@@ -1,6 +1,7 @@
 package com.example.fieldforce.controller;
 
 import com.example.fieldforce.entity.Shop;
+import com.example.fieldforce.helper.AuthHelper;
 import com.example.fieldforce.model.ApiResponse;
 import com.example.fieldforce.model.AuthUser;
 import com.example.fieldforce.model.Constant;
@@ -21,7 +22,8 @@ public class ShopController {
 
     @PostMapping()
     public ApiResponse<ShopDto> addShop(@RequestBody ShopDto shopDto){
-        ShopDto shop = shopService.addShop(shopDto);
+        String id = request.getHeader(Constant.AUTH_CONSTANT.toString());
+        ShopDto shop = shopService.addShop(shopDto, AuthHelper.getAuthUser(id));
         return new ApiResponse<>(shop);
     }
 
