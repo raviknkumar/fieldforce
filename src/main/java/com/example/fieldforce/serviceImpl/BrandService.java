@@ -20,11 +20,11 @@ public class BrandService {
     public BrandDto addBrand(BrandDto brandDto, AuthUser authUser) {
         Brand brand = brandConverter.convertModelToEntity(brandDto, authUser);
         brand = brandRepo.save(brand);
-        return brandConverter.ConvertEntityToModel(brand);
+        return brandConverter.convertEntityToModel(brand);
     }
 
     public Collection<BrandDto> listAll() {
         List<Brand> brands = brandRepo.findAll();
-        return brandConverter.ConvertEntityToModel(brands);
+        return brandConverter.convertEntityToModel(brands);
     }
 }

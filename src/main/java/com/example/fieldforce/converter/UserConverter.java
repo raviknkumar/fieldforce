@@ -31,7 +31,7 @@ public class UserConverter implements Converter<FfaUser, FfaUserDto> {
     }
 
     @Override
-    public FfaUserDto ConvertEntityToModel(FfaUser entity) {
+    public FfaUserDto convertEntityToModel(FfaUser entity) {
         return FfaUserDto.builder()
                 .name(entity.getName())
                 .password(entity.getPassword())
@@ -54,10 +54,10 @@ public class UserConverter implements Converter<FfaUser, FfaUserDto> {
     }
 
     @Override
-    public List<FfaUserDto> ConvertEntityToModel(List<FfaUser> entityList) {
+    public List<FfaUserDto> convertEntityToModel(List<FfaUser> entityList) {
         List<FfaUserDto> ffaUserDtos = new ArrayList<>();
         for(FfaUser ffaUser: entityList)
-            ffaUserDtos.add(ConvertEntityToModel(ffaUser));
+            ffaUserDtos.add(convertEntityToModel(ffaUser));
         return ffaUserDtos;
     }
 

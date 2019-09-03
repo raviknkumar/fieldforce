@@ -5,6 +5,7 @@ import com.example.fieldforce.model.AuthUser;
 import com.example.fieldforce.model.BrandDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,13 +35,17 @@ public class BrandConverter implements Converter<Brand, BrandDto> {
     }
 
     @Override
-    public BrandDto ConvertEntityToModel(Brand entity) {
+    public BrandDto convertEntityToModel(Brand entity) {
         return null;
     }
 
     @Override
     public List<Brand> convertModelToEntity(List<BrandDto> modelList, AuthUser user) {
-        return null;
+        List<Brand> brands = new ArrayList<>();
+        for(BrandDto model : modelList){
+            brands.add(convertModelToEntity(model, user));
+        }
+        return brands;
     }
 
     @Override
@@ -49,8 +54,12 @@ public class BrandConverter implements Converter<Brand, BrandDto> {
     }
 
     @Override
-    public List<BrandDto> ConvertEntityToModel(List<Brand> entityList) {
-        return null;
+    public List<BrandDto> convertEntityToModel(List<Brand> entityList) {
+        List<BrandDto> brandDtos = new ArrayList<>();
+        for(Brand entity : entityList){
+            brandDtos.add(convertEntityToModel(entity));
+        }
+        return brandDtos;
     }
 
     @Override

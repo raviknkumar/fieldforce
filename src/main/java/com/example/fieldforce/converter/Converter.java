@@ -10,13 +10,13 @@ public interface Converter<E,M> {
 
     E convertModelToEntity(M model);
 
-    M ConvertEntityToModel(E entity);
+    M convertEntityToModel(E entity);
 
     List<E> convertModelToEntity(List<M> modelList, AuthUser user);
 
     List<E> convertModelToEntity(List<M> modelList);
 
-    List<M> ConvertEntityToModel(List<E> entityList);
+    List<M> convertEntityToModel(List<E> entityList);
 
     void applyChanges(E entity, M model, AuthUser user);
 

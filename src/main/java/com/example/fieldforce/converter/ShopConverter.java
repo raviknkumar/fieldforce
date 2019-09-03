@@ -51,7 +51,7 @@ public class ShopConverter implements Converter<Shop, ShopDto> {
     }
 
     @Override
-    public ShopDto ConvertEntityToModel(Shop entity) {
+    public ShopDto convertEntityToModel(Shop entity) {
         return ShopDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
@@ -81,10 +81,10 @@ public class ShopConverter implements Converter<Shop, ShopDto> {
     }
 
     @Override
-    public List<ShopDto> ConvertEntityToModel(List<Shop> entityList) {
+    public List<ShopDto> convertEntityToModel(List<Shop> entityList) {
         List<ShopDto> shopDtos = new ArrayList<>();
         for (Shop shop : entityList)
-            shopDtos.add(ConvertEntityToModel(shop));
+            shopDtos.add(convertEntityToModel(shop));
         return shopDtos;
     }
 

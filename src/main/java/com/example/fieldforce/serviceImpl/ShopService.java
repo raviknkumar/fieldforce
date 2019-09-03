@@ -18,12 +18,12 @@ public class ShopService {
 
     public ShopDto addShop(ShopDto shopDto, AuthUser user){
         Shop shop = shopConverter.convertModelToEntity(shopDto, user);
-        return shopConverter.ConvertEntityToModel(shopRepo.save(shop));
+        return shopConverter.convertEntityToModel(shopRepo.save(shop));
     }
 
     public List<ShopDto> getShops(){
         List<Shop> shops = shopRepo.findAll();
-        return shopConverter.ConvertEntityToModel(shops);
+        return shopConverter.convertEntityToModel(shops);
     }
 
 }

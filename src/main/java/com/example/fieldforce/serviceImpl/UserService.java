@@ -17,13 +17,13 @@ public class UserService {
     public FfaUserDto addUser(FfaUserDto ffaUserDto){
         FfaUser ffaUser = userConverter.convertModelToEntity(ffaUserDto);
         FfaUser user = userRepo.save(ffaUser);
-        return userConverter.ConvertEntityToModel(user);
+        return userConverter.convertEntityToModel(user);
     }
 
     public FfaUserDto handleLogin(FfaUserDto userDto){
         FfaUser ffaUser = userRepo.findByName(userDto.getName());
         if(ffaUser.getPassword().equals(userDto.getPassword())){
-            return userConverter.ConvertEntityToModel(ffaUser);
+            return userConverter.convertEntityToModel(ffaUser);
         }
         throw new FfaException(ErrorCode.CLIENT_ERROR, "Not a valid user");
     }
