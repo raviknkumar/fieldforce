@@ -23,7 +23,7 @@ public class UserService {
             return userConverter.convertEntityToModel(user);
         }
         catch(ConstraintViolationException exc){
-            throw new FfaException("Sorry, user name already exists");
+            throw new FfaException("USER_ALREADY_EXISTS","Sorry, user name already exists");
         }
     }
 
