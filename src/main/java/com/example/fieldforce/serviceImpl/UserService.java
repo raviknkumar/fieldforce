@@ -16,7 +16,7 @@ public class UserService {
     @Autowired private UserConverter userConverter;
     @Autowired private UserRepo userRepo;
 
-    public FfaUserDto addUser(FfaUserDto ffaUserDto){
+    public FfaUserDto addUser(FfaUserDto ffaUserDto) throws FfaException{
         try {
             FfaUser ffaUser = userConverter.convertModelToEntity(ffaUserDto);
             FfaUser user = userRepo.save(ffaUser);

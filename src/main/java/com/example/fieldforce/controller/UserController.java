@@ -20,7 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    private ApiResponse<FfaUserDto> addUser(@RequestBody FfaUserDto userDto) {
+    private ApiResponse<FfaUserDto> addUser(@RequestBody FfaUserDto userDto) throws FfaException {
         FfaUserDto ffaUserDto = userService.addUser(userDto);
         return new ApiResponse<>(ffaUserDto);
     }
