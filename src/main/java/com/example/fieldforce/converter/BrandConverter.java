@@ -36,7 +36,10 @@ public class BrandConverter implements Converter<Brand, BrandDto> {
 
     @Override
     public BrandDto convertEntityToModel(Brand entity) {
-        return null;
+        return BrandDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .build();
     }
 
     @Override
