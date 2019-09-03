@@ -4,7 +4,9 @@ import com.example.fieldforce.converter.UserConverter;
 import com.example.fieldforce.entity.FfaUser;
 import com.example.fieldforce.model.FfaUserDto;
 import com.example.fieldforce.repositories.UserRepo;
+import org.hibernate.tool.schema.spi.ExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.example.fieldforce.exception.*;
 
@@ -22,7 +24,7 @@ public class UserService {
             FfaUser user = userRepo.save(ffaUser);
             return userConverter.convertEntityToModel(user);
         }
-        catch(ConstraintViolationException exc){
+        catch(DataIntegrityViolationException exc){
             throw new FfaException("USER_ALREADY_EXISTS","Sorry, user name already exists");
         }
     }
