@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.fieldforce.exception.*;
 
+import javax.validation.ConstraintViolationException;
+
 @Service
 public class UserService {
 
@@ -15,9 +17,14 @@ public class UserService {
     @Autowired private UserRepo userRepo;
 
     public FfaUserDto addUser(FfaUserDto ffaUserDto){
-        FfaUser ffaUser = userConverter.convertModelToEntity(ffaUserDto);
-        FfaUser user = userRepo.save(ffaUser);
-        return userConverter.convertEntityToModel(user);
+        try {
+            FfaUser ffaUser = userConverter.convertModelToEntity(ffaUserDto);
+            FfaUser user = userRepo.save(ffaUser);
+            return userConverter.convertEntityToModel(user);
+        }
+        catch(ConstraintViolationException exc){
+            throw new FfaException("Sorry, user name already exists");
+        }
     }
 
     public FfaUserDto handleLogin(FfaUserDto userDto){
