@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ItemDto {
     private Integer id;
-    private String itemName;
+    private String name;
     private Integer brandId;
     private Double price;
-    private Long availableCount;
+    private Integer inventory;
 }
