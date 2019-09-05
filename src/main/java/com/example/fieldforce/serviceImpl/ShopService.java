@@ -26,4 +26,9 @@ public class ShopService {
         return shopConverter.convertEntityToModel(shops);
     }
 
+    public List<ShopDto> getShops(String streetName){
+        List<Shop> shops = shopRepo.getAllByStreet(streetName);
+        return shopConverter.convertEntityToModel(shops);
+    }
+
 }

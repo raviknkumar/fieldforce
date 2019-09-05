@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "shop")
-@Table(indexes = { @Index(name = "street_index", columnList = "id,street") })
+@Table(indexes = { @Index(name = "street_index", columnList = "street") })
 public class Shop extends BaseEntity {
 
     @Column(name = "name")

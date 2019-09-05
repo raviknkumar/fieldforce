@@ -28,8 +28,10 @@ public class ShopController {
     }
 
     @GetMapping()
-    public ApiResponse<Collection<ShopDto>> getShops(){
-        return new ApiResponse<>(shopService.getShops());
+    public ApiResponse<Collection<ShopDto>> getShops(@RequestParam(name = "street", required = false)String streetName){
+        if(streetName == null){
+            return new ApiResponse<>(shopService.getShops());
+        }
+        return new ApiResponse<>(shopService.getShops(streetName));
     }
-
 }
