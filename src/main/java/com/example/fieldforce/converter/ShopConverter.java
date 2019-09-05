@@ -25,8 +25,8 @@ public class ShopConverter implements Converter<Shop, ShopDto> {
                 .build();
 
         shop.setId(model.getId());
-        shop.setCreatedBy(model.getId());
-        shop.setUpdatedBy(model.getId());
+        shop.setCreatedBy(user.getId());
+        shop.setUpdatedBy(user.getId());
 
         return shop;
     }
