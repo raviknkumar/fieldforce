@@ -15,6 +15,7 @@ public class ItemConverter implements Converter<Item, ItemDto> {
         Item item = Item.builder()
                 .name(model.getName())
                 .brandId(model.getBrandId())
+                .brandName(model.getBrandName())
                 .price(model.getPrice())
                 .inventory(model.getInventory())
                 .build();
@@ -31,6 +32,7 @@ public class ItemConverter implements Converter<Item, ItemDto> {
         Item item = Item.builder()
                 .name(model.getName())
                 .brandId(model.getBrandId())
+                .brandName(model.getBrandName())
                 .price(model.getPrice())
                 .inventory(model.getInventory())
                 .build();
@@ -48,6 +50,7 @@ public class ItemConverter implements Converter<Item, ItemDto> {
                 .id(entity.getId())
                 .name(entity.getName())
                 .brandId(entity.getBrandId())
+                .brandName(entity.getBrandName())
                 .price(entity.getPrice())
                 .inventory(entity.getInventory())
                 .build();

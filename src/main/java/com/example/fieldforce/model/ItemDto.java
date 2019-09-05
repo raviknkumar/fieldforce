@@ -13,6 +13,7 @@ public class ItemDto {
     private Integer id;
     private String name;
     private Integer brandId;
+    private String brandName;
     private Double price;
     private Integer inventory;
 }

@@ -21,6 +21,9 @@ public class Item extends BaseEntity{
     @Column(name = "brand_id")
     private Integer brandId;
 
+    @Column(name = "brand_name")
+    private String brandName;
+
     @Column(name = "price")
     private Double price;
 
