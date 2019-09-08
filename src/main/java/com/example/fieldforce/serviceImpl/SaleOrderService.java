@@ -66,10 +66,12 @@ public class SaleOrderService {
                     saleOrderDetailsToPersist.add(saleOrderDetail);
                 }
             }
-            // new order
-            SaleOrderDetail saleOrderDetail = saleOrderDetailConverter.convertModelToEntity(saleOrderDetailDto, user);
-            saleOrderDetail.setSaleOrderId(saleOrderId);
-            saleOrderDetailsToPersist.add(saleOrderDetail);
+            else {
+                // new order
+                SaleOrderDetail saleOrderDetail = saleOrderDetailConverter.convertModelToEntity(saleOrderDetailDto, user);
+                saleOrderDetail.setSaleOrderId(saleOrderId);
+                saleOrderDetailsToPersist.add(saleOrderDetail);
+            }
         }
 
         saleOrderDetailsToPersist = saleOrderDetailRepo.saveAll(saleOrderDetailsToPersist);
