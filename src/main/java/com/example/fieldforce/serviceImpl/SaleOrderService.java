@@ -60,8 +60,9 @@ public class SaleOrderService {
             if(saleOrderDetailId!=null) {
                 SaleOrderDetail saleOrderDetail = saleOrderDetaildToSaleOrderDetailMap.get(saleOrderDetailDto.getId());
                 if ((saleOrderDetail.getBoxes() != null && !saleOrderDetail.getBoxes().equals(saleOrderDetailDto.getBoxes()))
-                        ||
-                        (saleOrderDetail.getPieces() != null && !saleOrderDetail.getPieces().equals(saleOrderDetailDto.getPieces()))) {
+                        || (saleOrderDetail.getBoxes() == null && saleOrderDetailDto.getBoxes()!=null)
+                        || (saleOrderDetail.getPieces() != null && !saleOrderDetail.getPieces().equals(saleOrderDetailDto.getPieces()))
+                        || (saleOrderDetail.getPieces() == null && saleOrderDetailDto.getPieces()!=null)) {
                     saleOrderDetailConverter.applyChanges(saleOrderDetail, saleOrderDetailDto, user);
                     saleOrderDetailsToPersist.add(saleOrderDetail);
                 }
@@ -75,8 +76,6 @@ public class SaleOrderService {
         }
 
         saleOrderDetailsToPersist = saleOrderDetailRepo.saveAll(saleOrderDetailsToPersist);
-        //calc sod change
-        calculateCostChange(saleOrderDetailsToPersist, saleOrderRequestDto);
 
         saleOrderRequestDto.setSaleOrderDetails(saleOrderDetailConverter.convertEntityToModel(saleOrderDetailsToPersist));
         return saleOrderRequestDto;
