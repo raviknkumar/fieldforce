@@ -1,15 +1,14 @@
 package com.example.fieldforce.controller;
 
+import com.example.fieldforce.exception.FfaException;
 import com.example.fieldforce.helper.AuthHelper;
-import com.example.fieldforce.model.ApiResponse;
-import com.example.fieldforce.model.AuthUser;
-import com.example.fieldforce.model.Constant;
-import com.example.fieldforce.model.SaleOrderRequestDto;
+import com.example.fieldforce.model.*;
 import com.example.fieldforce.serviceImpl.SaleOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping("/so")
@@ -34,5 +33,14 @@ public class SaleOrderController {
     public ApiResponse<SaleOrderRequestDto> fetchByShopIdAndDate(@RequestParam("shopId") Integer shopId, @RequestParam("orderDate") String orderDate){
         SaleOrderRequestDto saleOrderRequestDto = saleOrderService.fetchSaleOrder(shopId, orderDate);
         return new ApiResponse<>(saleOrderRequestDto);
+    }
+
+    @GetMapping
+    public ApiResponse<List<ShopDto>> fetchByDate(@RequestParam("date") String orderDate){
+        List<ShopDto> shopDtos = saleOrderService.fetchSaleOrderByDate(orderDate);
+        if(shopDtos == null){
+            throw new FfaException("NO Orders Found","There are no customer orders for given date");
+        }
+        return new ApiResponse<>(shopDtos);
     }
 }

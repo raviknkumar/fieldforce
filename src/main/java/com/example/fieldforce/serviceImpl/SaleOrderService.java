@@ -4,10 +4,7 @@ import com.example.fieldforce.converter.SaleOrderConverter;
 import com.example.fieldforce.converter.SaleOrderDetailConverter;
 import com.example.fieldforce.entity.SaleOrder;
 import com.example.fieldforce.entity.SaleOrderDetail;
-import com.example.fieldforce.model.AuthUser;
-import com.example.fieldforce.model.SaleOrderDetailDto;
-import com.example.fieldforce.model.SaleOrderDto;
-import com.example.fieldforce.model.SaleOrderRequestDto;
+import com.example.fieldforce.model.*;
 import com.example.fieldforce.repositories.SaleOrderDetailRepo;
 import com.example.fieldforce.repositories.SaleOrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +93,20 @@ public class SaleOrderService {
         SaleOrderDto saleOrderDto = saleOrderConverter.convertEntityToModel(saleOrder);
         List<SaleOrderDetailDto> saleOrderDetailDtos = saleOrderDetailConverter.convertEntityToModel(saleOrderDetails);
         return SaleOrderRequestDto.convertSOAndSOD(saleOrderDto, saleOrderDetailDtos);
+    }
+
+    public List<ShopDto> fetchSaleOrderByDate(String orderDate) {
+        List<SaleOrder> saleOrders = saleOrderRepo.findAllByDate(orderDate);
+        List<ShopDto> shopDtos = new ArrayList<>();
+        if(!CollectionUtils.isEmpty(saleOrders)){
+            for(SaleOrder saleOrder : saleOrders){
+                shopDtos.add(ShopDto.builder()
+                .name(saleOrder.getShopName())
+                .id(saleOrder.getShopId())
+                .build());
+            }
+            return shopDtos;
+        }
+        return null;
     }
 }
