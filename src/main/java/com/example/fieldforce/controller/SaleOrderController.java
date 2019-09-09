@@ -35,7 +35,7 @@ public class SaleOrderController {
         return new ApiResponse<>(saleOrderRequestDto);
     }
 
-    @GetMapping
+    @GetMapping("/date")
     public ApiResponse<List<ShopDto>> fetchByDate(@RequestParam("date") String orderDate){
         List<ShopDto> shopDtos = saleOrderService.fetchSaleOrderByDate(orderDate);
         if(shopDtos == null){
