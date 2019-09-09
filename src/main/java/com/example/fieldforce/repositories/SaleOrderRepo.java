@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface SaleOrderRepo extends JpaRepository<SaleOrder, Integer> {
     Optional<SaleOrder> findByShopIdAndOrderDate(Integer shopId, String orderDate);
-    List<SaleOrder> findAllByDate(String orderDate);
+    List<SaleOrder> findAllByOrderDate(String orderDate);
 }

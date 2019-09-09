@@ -105,7 +105,7 @@ public class SaleOrderService {
     }
 
     public List<ShopDto> fetchSaleOrderByDate(String orderDate) {
-        List<SaleOrder> saleOrders = saleOrderRepo.findAllByDate(orderDate);
+        List<SaleOrder> saleOrders = saleOrderRepo.findAllByOrderDate(orderDate);
         List<ShopDto> shopDtos = new ArrayList<>();
         if(!CollectionUtils.isEmpty(saleOrders)){
             for(SaleOrder saleOrder : saleOrders){

@@ -10,7 +10,7 @@ public class StringUtils {
 
     public static String getCleanString(Number n) {
         if(n == null)
-            return "";
+            return "0";
         return n.toString().trim();
     }
 }

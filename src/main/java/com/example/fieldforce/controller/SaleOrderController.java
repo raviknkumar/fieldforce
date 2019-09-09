@@ -4,6 +4,7 @@ import com.example.fieldforce.exception.FfaException;
 import com.example.fieldforce.helper.AuthHelper;
 import com.example.fieldforce.helper.FileHelper;
 import com.example.fieldforce.helper.FileStorageService;
+import com.example.fieldforce.helper.FileUtils;
 import com.example.fieldforce.model.*;
 import com.example.fieldforce.serviceImpl.SaleOrderService;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -61,6 +62,23 @@ public class SaleOrderController {
         String filePath = FileHelper.getFilePath(shopName, orderDate);
         if(excelSheet == null)
             throw new FfaException("Sheet Generation Failed", " Failed to create excel sheet");
+
+        byte[] resource = fileStorageService.loadFileAsBytes(filePath);
+        String contentType = CONTENT_TYPE_OCTET;
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "\"")
+                .body(resource);
+    }
+
+    @GetMapping("/downloadExcel")
+    public ResponseEntity<byte[]> downloadExcel(@RequestParam("orderDate") String orderDate,
+                                         @RequestParam("shopId") Integer shopId,
+                                         @RequestParam("shopName") String shopName) throws Exception {
+        String filePath = FileHelper.getFilePath(shopName, orderDate);
+        if(!FileUtils.isFileExists(filePath))
+            return null;
 
         byte[] resource = fileStorageService.loadFileAsBytes(filePath);
         String contentType = CONTENT_TYPE_OCTET;
