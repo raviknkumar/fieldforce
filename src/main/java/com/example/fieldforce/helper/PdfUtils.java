@@ -96,18 +96,20 @@ public class PdfUtils {
             table.addCell(cell);
         }
 
+        Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
+
         for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
-            cell = createCell(saleOrderDetail.getItemName(), fontH1);
+            cell = createCell(saleOrderDetail.getItemName(), font);
             table.addCell(cell);
             Integer pieces = saleOrderDetail.getPieces();
-            cell = createCell(pieces!=null ? pieces.toString() : "0", fontH1);
+            cell = createCell(pieces!=null ? pieces.toString() : "0", font);
             table.addCell(cell);
             Integer boxes = saleOrderDetail.getBoxes();
-            cell = createCell(boxes!=null ? boxes.toString() : "0", fontH1);
+            cell = createCell(boxes!=null ? boxes.toString() : "0", font);
             table.addCell(cell);
             Double salePrice = saleOrderDetail.getSalePrice();
             String price = salePrice!=null ? salePrice.toString() : "NA";
-            cell = createCell(price, fontH1);
+            cell = createCell(price, font);
             table.addCell(cell);
         }
         return table;
