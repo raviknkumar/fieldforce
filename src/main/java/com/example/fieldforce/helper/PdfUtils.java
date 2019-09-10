@@ -27,6 +27,7 @@ public class PdfUtils {
 
         try {
             docWriter = PdfWriter.getInstance(doc, new FileOutputStream(path));
+            doc.open();
             doc.addAuthor("bhanu");
             doc.addCreationDate();
             doc.addProducer();
@@ -38,7 +39,6 @@ public class PdfUtils {
 
             Rectangle one = new Rectangle(210, 780); // Set page size, this is thermal print size
             doc.setPageSize(one);
-            doc.open();
 
             PdfContentByte cb = docWriter.getDirectContent();
             doc.add(createTable(saleOrderDetails));
