@@ -3,13 +3,14 @@ package com.example.fieldforce.helper;
 import com.example.fieldforce.entity.SaleOrderDetail;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
+@Service
 public class PdfUtils {
 
     static String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Sale Price"};
