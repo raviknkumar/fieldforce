@@ -31,4 +31,10 @@ public class ShopService {
         return shopConverter.convertEntityToModel(shops);
     }
 
+    public List<ShopDto> getShopsByIds(List<Integer> shopIds){
+        List<Shop> shops = shopRepo.getAllByIdIn(shopIds);
+        return shopConverter.convertEntityToModel(shops);
+    }
+
+
 }

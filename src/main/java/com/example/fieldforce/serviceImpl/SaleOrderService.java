@@ -34,6 +34,7 @@ public class SaleOrderService {
     @Autowired private SaleOrderDetailConverter saleOrderDetailConverter;
     @Autowired private SaleOrderDetailRepo saleOrderDetailRepo;
     @Autowired private PdfUtils pdfUtils;
+    @Autowired private ShopService shopService;
 
     public SaleOrderRequestDto createSaleOrder(SaleOrderRequestDto saleOrderRequestDto, AuthUser user){
         List<SaleOrderDetailDto> saleOrderDetails = saleOrderRequestDto.getSaleOrderDetails();
@@ -107,10 +108,15 @@ public class SaleOrderService {
     public List<ShopDto> fetchSaleOrderByDate(String orderDate) {
         List<SaleOrder> saleOrders = saleOrderRepo.findAllByOrderDate(orderDate);
         List<ShopDto> shopDtos = new ArrayList<>();
+
+        List<ShopDto> shopsByIds = shopService.getShopsByIds(saleOrders.stream().map(SaleOrder::getShopId).collect(Collectors.toList()));
+        Map<Integer, ShopDto> shopIdToShopDtoMap = shopsByIds.stream().collect(Collectors.toMap(ShopDto::getId, Function.identity()));
+
         if(!CollectionUtils.isEmpty(saleOrders)){
             for(SaleOrder saleOrder : saleOrders){
                 shopDtos.add(ShopDto.builder()
                 .name(saleOrder.getShopName())
+                .street(shopIdToShopDtoMap.get(saleOrder.getShopId()).getStreet())
                 .id(saleOrder.getShopId())
                 .build());
             }
