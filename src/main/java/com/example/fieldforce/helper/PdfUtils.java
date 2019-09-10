@@ -5,6 +5,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.StyleConstants;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,10 +19,13 @@ public class PdfUtils {
     private BaseFont bfBold;
     private BaseFont bf;
     private BaseFont tf;
+    private Integer HEADER_FONT_SIZE = 16;
 
     public void createPDF(String path, String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) {
 
-        Document doc = new Document();
+        RectangleReadOnly rectangleReadOnly = new RectangleReadOnly(297.5F, 842.0F);
+        Document doc = new Document(rectangleReadOnly);
+
         PdfWriter docWriter = null;
         initializeFonts();
 
@@ -34,8 +38,15 @@ public class PdfUtils {
             doc.addCreator("Bhanu");
             doc.addTitle("Customer Order");
 
-            doc.add(new Paragraph("ShopName:" + shopName));
+            Font f = new Font();
+            f.setStyle(Font.BOLD);
+            f.setSize(HEADER_FONT_SIZE);
+            Paragraph p = new Paragraph(shopName, f);
+            p.setAlignment(Element.ALIGN_CENTER);
+            doc.add(p);
+
             doc.add(new Paragraph("OrderDate:" + orderDate));
+            doc.add(new Paragraph("\n"));
 
             Rectangle one = new Rectangle(210, 780); // Set page size, this is thermal print size
             doc.setPageSize(one);
@@ -61,7 +72,6 @@ public class PdfUtils {
         try {
             bfBold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
             bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            tf = BaseFont.createFont("tunga.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
         } catch (DocumentException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -71,29 +81,44 @@ public class PdfUtils {
 
     private PdfPTable createTable(List<SaleOrderDetail> saleOrderDetails) throws DocumentException {
 
-        PdfPTable table = new PdfPTable(SODheaders.length);
-        table.setWidthPercentage(288 / 5.23f);
-        table.setWidths(new int[]{2, 1, 1});
+        PdfPTable table = new PdfPTable(4);
+        table.setWidthPercentage(100);
+        table.setWidths(new int[]{4, 1, 1, 1});
+
         PdfPCell cell;
-        for (int i = 0; i < SODheaders.length; i++) {
-            cell = new PdfPCell(new Phrase(SODheaders[i]));
-            cell.setColspan(3);
+
+        Font fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
+
+        for (String soDheader : SODheaders) {
+            cell = new PdfPCell(new Phrase(soDheader, fontH1));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBorderColor(BaseColor.DARK_GRAY);
             table.addCell(cell);
         }
+
         for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
-            cell = new PdfPCell(new Phrase(saleOrderDetail.getItemName()));
-            cell.setColspan(3);
+            cell = createCell(saleOrderDetail.getItemName(), fontH1);
             table.addCell(cell);
-            cell = new PdfPCell(new Phrase(saleOrderDetail.getPieces()));
-            cell.setColspan(3);
+            Integer pieces = saleOrderDetail.getPieces();
+            cell = createCell(pieces!=null ? pieces.toString() : "0", fontH1);
             table.addCell(cell);
-            cell = new PdfPCell(new Phrase(saleOrderDetail.getBoxes()));
-            cell.setColspan(3);
+            Integer boxes = saleOrderDetail.getBoxes();
+            cell = createCell(boxes!=null ? boxes.toString() : "0", fontH1);
             table.addCell(cell);
-            cell = new PdfPCell(new Phrase("" + saleOrderDetail.getSalePrice()));
-            cell.setColspan(3);
+            Double salePrice = saleOrderDetail.getSalePrice();
+            String price = salePrice!=null ? salePrice.toString() : "NA";
+            cell = createCell(price, fontH1);
             table.addCell(cell);
         }
         return table;
+    }
+
+    private PdfPCell createCell(String text, Font font){
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+        cell.setPaddingLeft(2F);
+        cell.setBorderColor(BaseColor.DARK_GRAY);
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        return cell;
     }
 }
