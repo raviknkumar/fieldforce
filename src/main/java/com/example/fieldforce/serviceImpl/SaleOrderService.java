@@ -119,7 +119,7 @@ public class SaleOrderService {
         return null;
     }
 
-    public Object createOutputFile(String orderDate, Integer shopId, String type) throws Exception {
+    public boolean createOutputFile(String orderDate, Integer shopId, String type) throws Exception {
         Optional<SaleOrder> saleOrderOptional = saleOrderRepo.findByShopIdAndOrderDate(shopId, orderDate);
         if(!saleOrderOptional.isPresent()){
             throw new FfaException("No Order Present", "No Order found for given filter");
@@ -128,17 +128,18 @@ public class SaleOrderService {
         List<SaleOrderDetail> saleOrderDetails = saleOrderDetailRepo.findAllBySaleOrderId(saleOrder.getId());
 
         if(type.equals("excel")) {
-            return createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+            createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+            return true;
         }
         else {
-            return createPdfFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+             createPdfFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+             return true;
         }
     }
 
-    private Object createPdfFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) {
+    private void createPdfFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) {
         String filePath = FileHelper.getFilePath(shopName, orderDate, "pdf");
         pdfUtils.createPDF(filePath, shopName, orderDate, saleOrderDetails);
-        return null;
 
     }
 

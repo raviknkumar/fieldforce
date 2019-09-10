@@ -60,8 +60,8 @@ public class SaleOrderController {
                                          @RequestParam("shopId") Integer shopId,
                                          @RequestParam("shopName") String shopName,
                                          @RequestParam("type") String type) throws Exception {
-        Object outputFile = saleOrderService.createOutputFile(orderDate, shopId, type);
-        if (outputFile == null)
+        boolean outputFileCreated = saleOrderService.createOutputFile(orderDate, shopId, type);
+        if (outputFileCreated != true)
             throw new FfaException("File Generation Failed", " Failed to create " + type);
 
         String filePath = FileHelper.getFilePath(shopName, orderDate, type);
@@ -92,6 +92,4 @@ public class SaleOrderController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "\"")
                 .body(resource);
     }
-
-
 }
