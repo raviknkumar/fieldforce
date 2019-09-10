@@ -31,10 +31,13 @@ public class UserService {
 
     public FfaUserDto handleLogin(FfaUserDto userDto){
         FfaUser ffaUser = userRepo.findByName(userDto.getName());
+        if(ffaUser == null){
+            throw new FfaException("NO_USER_FOUND", "So, you don't have an account, please signUp");
+        }
         if(ffaUser.getPassword().equals(userDto.getPassword())){
             return userConverter.convertEntityToModel(ffaUser);
         }
-        throw new FfaException(ErrorCode.CLIENT_ERROR, "Not a valid user");
+        throw new FfaException("ERROR", "UserName or password is invalid");
     }
 }
 
