@@ -5,10 +5,7 @@ import com.example.fieldforce.converter.SaleOrderDetailConverter;
 import com.example.fieldforce.entity.SaleOrder;
 import com.example.fieldforce.entity.SaleOrderDetail;
 import com.example.fieldforce.exception.FfaException;
-import com.example.fieldforce.helper.ExcelUtils;
-import com.example.fieldforce.helper.FileHelper;
-import com.example.fieldforce.helper.FileUtils;
-import com.example.fieldforce.helper.StringUtils;
+import com.example.fieldforce.helper.*;
 import com.example.fieldforce.model.*;
 import com.example.fieldforce.repositories.SaleOrderDetailRepo;
 import com.example.fieldforce.repositories.SaleOrderRepo;
@@ -30,10 +27,13 @@ import java.util.stream.Collectors;
 @Service
 public class SaleOrderService {
 
+    static String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Sale Price"};
+
     @Autowired private SaleOrderRepo saleOrderRepo;
     @Autowired private SaleOrderConverter saleOrderConverter;
     @Autowired private SaleOrderDetailConverter saleOrderDetailConverter;
     @Autowired private SaleOrderDetailRepo saleOrderDetailRepo;
+    @Autowired private PdfUtils pdfUtils;
 
     public SaleOrderRequestDto createSaleOrder(SaleOrderRequestDto saleOrderRequestDto, AuthUser user){
         List<SaleOrderDetailDto> saleOrderDetails = saleOrderRequestDto.getSaleOrderDetails();
@@ -119,7 +119,7 @@ public class SaleOrderService {
         return null;
     }
 
-    public XSSFWorkbook createExcelSheet(String orderDate, Integer shopId) throws Exception {
+    public Object createOutputFile(String orderDate, Integer shopId, String type) throws Exception {
         Optional<SaleOrder> saleOrderOptional = saleOrderRepo.findByShopIdAndOrderDate(shopId, orderDate);
         if(!saleOrderOptional.isPresent()){
             throw new FfaException("No Order Present", "No Order found for given filter");
@@ -127,26 +127,46 @@ public class SaleOrderService {
         SaleOrder saleOrder = saleOrderOptional.get();
         List<SaleOrderDetail> saleOrderDetails = saleOrderDetailRepo.findAllBySaleOrderId(saleOrder.getId());
 
-        String headers1[] = new String[]{saleOrder.getShopName(), saleOrder.getOrderDate() };
-        String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Sale Price"};
+        if(type.equals("excel")) {
+            return createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+        }
+        else {
+            return createPdfFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+        }
+    }
+
+    private Object createPdfFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) {
+        String filePath = FileHelper.getFilePath(shopName, orderDate, "pdf");
+        pdfUtils.createPDF(filePath, shopName, orderDate, saleOrderDetails);
+        return null;
+
+    }
+
+    private XSSFWorkbook createExcelFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) throws Exception {
+        String headers1[] = new String[]{shopName, orderDate};
+
         XSSFWorkbook xssfWorkbook = ExcelUtils.getNewXSSFWorkbook();
         XSSFSheet xssfSheet = xssfWorkbook.createSheet("Order_Sheet");
-        String filePath = FileHelper.getFilePath(saleOrder.getShopName(), orderDate);
+        String filePath = FileHelper.getFilePath(shopName, orderDate, "excel");
 
         ExcelUtils.writeHeaderToSheet(xssfSheet, headers1);
 
         List<String[]> dataList = new ArrayList<>();
-        for(SaleOrderDetail saleOrderDetail : saleOrderDetails){
-            dataList.add(new String[]{
-                   StringUtils.getCleanString(saleOrderDetail.getItemName()),
-                    StringUtils.getCleanString(saleOrderDetail.getPieces()),
-                    StringUtils.getCleanString(saleOrderDetail.getBoxes()),
-                    StringUtils.getCleanString(saleOrderDetail.getSalePrice()),
-            });
+        for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
+            dataList.add(getSODDataAsStringArray(saleOrderDetail));
         }
         ExcelUtils.writeDataToSheet(xssfSheet, SODheaders, dataList);
         FileUtils.saveFile(filePath, xssfWorkbook);
         log.info("Saved Workbook successfully");
         return xssfWorkbook;
+    }
+
+    private String[] getSODDataAsStringArray(SaleOrderDetail saleOrderDetail){
+        return new String[]{
+                StringUtils.getCleanString(saleOrderDetail.getItemName()),
+                StringUtils.getCleanString(saleOrderDetail.getPieces()),
+                StringUtils.getCleanString(saleOrderDetail.getBoxes()),
+                StringUtils.getCleanString(saleOrderDetail.getSalePrice()),
+        };
     }
 }
