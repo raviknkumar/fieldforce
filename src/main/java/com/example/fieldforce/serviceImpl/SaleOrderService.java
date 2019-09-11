@@ -16,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class SaleOrderService {
 
-    static String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Sale Price"};
+    static String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Price", "Tax", "Amount"};
 
     @Autowired private SaleOrderRepo saleOrderRepo;
     @Autowired private SaleOrderConverter saleOrderConverter;
@@ -35,6 +33,7 @@ public class SaleOrderService {
     @Autowired private SaleOrderDetailRepo saleOrderDetailRepo;
     @Autowired private PdfUtils pdfUtils;
     @Autowired private ShopService shopService;
+    @Autowired private ItemService itemService;
 
     public SaleOrderRequestDto createSaleOrder(SaleOrderRequestDto saleOrderRequestDto, AuthUser user){
         List<SaleOrderDetailDto> saleOrderDetails = saleOrderRequestDto.getSaleOrderDetails();
@@ -133,23 +132,29 @@ public class SaleOrderService {
         SaleOrder saleOrder = saleOrderOptional.get();
         List<SaleOrderDetail> saleOrderDetails = saleOrderDetailRepo.findAllBySaleOrderId(saleOrder.getId());
 
+        List<Integer> itemIds = saleOrderDetails.stream().map(SaleOrderDetail::getItemId).collect(Collectors.toList());
+        List<ItemDto> itemDtos = itemService.getAllByIds(itemIds);
+        Map<Integer, ItemDto> itemIdToItemMap = itemDtos.stream().collect(Collectors.toMap(ItemDto::getId, Function.identity()));
+
         if(type.equals("excel")) {
-            createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+            createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails, itemIdToItemMap);
             return true;
         }
         else {
-             createPdfFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
+             createPdfFile(saleOrder.getShopName(), orderDate, saleOrderDetails, itemIdToItemMap);
              return true;
         }
     }
 
-    private void createPdfFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) {
+    private void createPdfFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails,
+                               Map<Integer, ItemDto> itemIdToItemMap) {
         String filePath = FileHelper.getFilePath(shopName, orderDate, "pdf");
-        pdfUtils.createPDF(filePath, shopName, orderDate, saleOrderDetails);
+        pdfUtils.createPDF(filePath, shopName, orderDate, saleOrderDetails, itemIdToItemMap);
 
     }
 
-    private XSSFWorkbook createExcelFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) throws Exception {
+    private XSSFWorkbook createExcelFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails
+            , Map<Integer, ItemDto> itemIdToItemMap) throws Exception {
         String headers1[] = new String[]{shopName, orderDate};
 
         XSSFWorkbook xssfWorkbook = ExcelUtils.getNewXSSFWorkbook();
@@ -160,6 +165,9 @@ public class SaleOrderService {
 
         List<String[]> dataList = new ArrayList<>();
         for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
+            ItemDto itemDto = itemIdToItemMap.get(saleOrderDetail.getItemId());
+            saleOrderDetail.setOriginalPrice(itemDto.getBoxPrice());
+            saleOrderDetail.setTaxPrice(itemDto.getTaxPercent());
             dataList.add(getSODDataAsStringArray(saleOrderDetail));
         }
         ExcelUtils.writeDataToSheet(xssfSheet, SODheaders, dataList);
@@ -173,7 +181,18 @@ public class SaleOrderService {
                 StringUtils.getCleanString(saleOrderDetail.getItemName()),
                 StringUtils.getCleanString(saleOrderDetail.getPieces()),
                 StringUtils.getCleanString(saleOrderDetail.getBoxes()),
+                StringUtils.getCleanString(saleOrderDetail.getOriginalPrice()),
+                StringUtils.getCleanString(saleOrderDetail.getTaxPrice()),
                 StringUtils.getCleanString(saleOrderDetail.getSalePrice()),
         };
+    }
+
+    public void deleteData() {
+        LocalDate today = LocalDate.now();
+        LocalDate prevDate = DateUtils.addDaysToLocalDate(today, -3);
+        List<SaleOrder> saleOrders =  saleOrderRepo.deleteAllByOrderDate(prevDate.toString());
+        List<Integer> soIds = saleOrders.stream().map(SaleOrder::getId).collect(Collectors.toList());
+        saleOrderDetailRepo.deleteAllBySaleOrderIdIn(soIds);
+        log.info("Data deleted successfully");
     }
 }

@@ -29,8 +29,8 @@ public class SaleOrderDetail extends BaseEntity{
     @Column(name = "tax_price")
     private Double taxPrice;
 
-    @Column(name = "purchase_price")
-    private Double purchasePrice;
+    @Column(name = "original_price")
+    private Double originalPrice;
 
     @Column(name = "pieces")
     private Integer pieces;

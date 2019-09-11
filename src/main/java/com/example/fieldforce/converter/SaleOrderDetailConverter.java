@@ -18,7 +18,7 @@ public class SaleOrderDetailConverter implements Converter<SaleOrderDetail, Sale
         .itemName(model.getItemName())        
         .salePrice(model.getSalePrice())
         .taxPrice(model.getTaxPrice())
-        .purchasePrice(model.getPurchasePrice())
+        .originalPrice(model.getPurchasePrice())
         .pieces(model.getPieces())
         .boxes(model.getBoxes())
         .discount(model.getDiscount())
@@ -45,7 +45,7 @@ public class SaleOrderDetailConverter implements Converter<SaleOrderDetail, Sale
                 .itemName(entity.getItemName())
                 .salePrice(entity.getSalePrice())
                 .taxPrice(entity.getTaxPrice())
-                .purchasePrice(entity.getPurchasePrice())
+                .purchasePrice(entity.getOriginalPrice())
                 .pieces(entity.getPieces())
                 .boxes(entity.getBoxes())
                 .discount(entity.getDiscount())
@@ -82,7 +82,7 @@ public class SaleOrderDetailConverter implements Converter<SaleOrderDetail, Sale
          entity.setItemName(model.getItemName());
          entity.setSalePrice(model.getSalePrice());
          entity.setTaxPrice(model.getTaxPrice());
-         entity.setPurchasePrice(model.getPurchasePrice());
+         entity.setOriginalPrice(model.getPurchasePrice());
          entity.setPieces(model.getPieces());
          entity.setBoxes(model.getBoxes());
          entity.setDiscount(model.getDiscount());

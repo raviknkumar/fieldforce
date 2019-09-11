@@ -5,17 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "shop")
-@Table(indexes = { @Index(name = "street_index", columnList = "street") })
+@Table(indexes = { @Index(name = "street_index", columnList = "street") },
+        uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
 public class Shop extends BaseEntity {
 
     @Column(name = "name")

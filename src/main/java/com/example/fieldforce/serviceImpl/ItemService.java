@@ -25,4 +25,9 @@ public class ItemService {
         List<Item> items = itemRepo.findAll();
         return itemConverter.convertEntityToModel(items);
     }
+
+    public List<ItemDto> getAllByIds(List<Integer> ids){
+        List<Item> items = itemRepo.findAllByIdIn(ids);
+        return itemConverter.convertEntityToModel(items);
+    }
 }

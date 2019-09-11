@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface SaleOrderDetailRepo extends JpaRepository<SaleOrderDetail, Integer> {
     List<SaleOrderDetail> findAllBySaleOrderId(Integer saleOrderId);
+    void deleteAllBySaleOrderIdIn(List<Integer> saleOrderIds);
 }

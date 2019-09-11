@@ -7,12 +7,15 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "item")
+@Table(uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
 public class Item extends BaseEntity{
 
     @Column(name = "name")

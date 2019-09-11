@@ -7,15 +7,18 @@ import com.example.fieldforce.helper.FileStorageService;
 import com.example.fieldforce.helper.FileUtils;
 import com.example.fieldforce.model.*;
 import com.example.fieldforce.serviceImpl.SaleOrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/so")
 public class SaleOrderController {
@@ -91,5 +94,12 @@ public class SaleOrderController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "\"")
                 .body(resource);
+    }
+
+    @GetMapping("/try")
+    @Scheduled(cron = "0 1 * * *")
+    public void deletePreviousData(){
+        log.info("deleting previous data");
+        saleOrderService.deleteData();
     }
 }
