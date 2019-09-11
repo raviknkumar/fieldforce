@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -187,6 +188,7 @@ public class SaleOrderService {
         };
     }
 
+    @Transactional
     public void deleteData() {
         LocalDate today = LocalDate.now();
         LocalDate prevDate = DateUtils.addDaysToLocalDate(today, -3);

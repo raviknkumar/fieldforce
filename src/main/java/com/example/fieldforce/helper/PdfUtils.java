@@ -96,7 +96,7 @@ public class PdfUtils {
 
         PdfPTable table = new PdfPTable(SODheaders.length);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{3, 1, 1, 1, 1, 1});
+        table.setWidths(new int[]{2, 1, 1, 1, 1, 1});
 
         PdfPCell cell;
 
