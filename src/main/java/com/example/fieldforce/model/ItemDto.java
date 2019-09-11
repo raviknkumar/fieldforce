@@ -14,6 +14,8 @@ public class ItemDto {
     private String name;
     private Integer brandId;
     private String brandName;
-    private Double price;
+    private Double boxPrice;
+    private Double piecePrice;
+    private Double taxPercent;
     private Integer inventory;
 }

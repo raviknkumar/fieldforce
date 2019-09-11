@@ -24,9 +24,15 @@ public class Item extends BaseEntity{
     @Column(name = "brand_name")
     private String brandName;
 
-    @Column(name = "price")
-    private Double price;
+    @Column(name = "box_price")
+    private Double boxPrice;
+
+    @Column(name = "piece_price")
+    private Double piecePrice;
 
     @Column(name = "inventory")
     private Integer inventory;
+
+    @Column(name = "tax_percent")
+    private Double taxPercent;
 }
