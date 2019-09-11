@@ -192,8 +192,10 @@ public class SaleOrderService {
     public void deleteData() {
         LocalDate today = LocalDate.now();
         LocalDate prevDate = DateUtils.addDaysToLocalDate(today, -3);
+        log.info("{}", prevDate.toString());
         List<SaleOrder> saleOrders =  saleOrderRepo.deleteAllByOrderDate(prevDate.toString());
         List<Integer> soIds = saleOrders.stream().map(SaleOrder::getId).collect(Collectors.toList());
+        log.info("{}", soIds);
         saleOrderDetailRepo.deleteAllBySaleOrderIdIn(soIds);
         log.info("Data deleted successfully");
     }
