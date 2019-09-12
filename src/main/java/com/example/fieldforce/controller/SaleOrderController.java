@@ -53,7 +53,7 @@ public class SaleOrderController {
     public ApiResponse<List<ShopDto>> fetchByDate(@RequestParam("orderDate") String orderDate) {
         List<ShopDto> shopDtos = saleOrderService.fetchSaleOrderByDate(orderDate);
         if (shopDtos == null) {
-            throw new FfaException("NO Orders Found", "There are no customer orders for given date");
+            throw new FfaException("No Orders Found", "There are no customer orders for given date");
         }
         return new ApiResponse<>(shopDtos);
     }
@@ -94,6 +94,13 @@ public class SaleOrderController {
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "\"")
                 .body(resource);
+    }
+
+    @PostMapping("/price")
+    public ApiResponse<String> savePrices(@RequestBody SaleOrderRequestDto saleOrderRequestDto){
+        AuthUser user = AuthHelper.getAuthUser(httpServletRequest.getHeader(Constant.AUTH_CONSTANT));
+        String response = saleOrderService.savePrice(saleOrderRequestDto, user);
+        return new ApiResponse<>("Price saved successfully");
     }
 
     @GetMapping("/try")

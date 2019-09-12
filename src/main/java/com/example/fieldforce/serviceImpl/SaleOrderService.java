@@ -100,8 +100,16 @@ public class SaleOrderService {
             return null;
         }
         List<SaleOrderDetail> saleOrderDetails = saleOrderDetailRepo.findAllBySaleOrderId(saleOrder.getId());
+        List<Integer> itemIds = saleOrderDetails.stream().map(SaleOrderDetail::getItemId).collect(Collectors.toList());
+        List<ItemDto> itemDtos = itemService.getAllByIds(itemIds);
+        Map<Integer, ItemDto> itemIdToItemMap = itemDtos.stream().collect(Collectors.toMap(ItemDto::getId, Function.identity()));
         SaleOrderDto saleOrderDto = saleOrderConverter.convertEntityToModel(saleOrder);
         List<SaleOrderDetailDto> saleOrderDetailDtos = saleOrderDetailConverter.convertEntityToModel(saleOrderDetails);
+        Integer itemId = 0;
+        for(SaleOrderDetailDto saleOrderDetailDto : saleOrderDetailDtos){
+            itemId = saleOrderDetailDto.getItemId();
+            saleOrderDetailDto.setTaxPrice(itemIdToItemMap.get(itemId).getTaxPercent());
+        }
         return SaleOrderRequestDto.convertSOAndSOD(saleOrderDto, saleOrderDetailDtos);
     }
 
@@ -191,12 +199,36 @@ public class SaleOrderService {
     @Transactional
     public void deleteData() {
         LocalDate today = LocalDate.now();
-        LocalDate prevDate = DateUtils.addDaysToLocalDate(today, -3);
+        LocalDate prevDate = DateUtils.addDaysToLocalDate(today, -15);
         log.info("{}", prevDate.toString());
         List<SaleOrder> saleOrders =  saleOrderRepo.deleteAllByOrderDate(prevDate.toString());
         List<Integer> soIds = saleOrders.stream().map(SaleOrder::getId).collect(Collectors.toList());
         log.info("{}", soIds);
         saleOrderDetailRepo.deleteAllBySaleOrderIdIn(soIds);
         log.info("Data deleted successfully");
+    }
+
+    public String savePrice(SaleOrderRequestDto saleOrderRequestDto, AuthUser authUser) {
+        List<SaleOrderDetailDto> saleOrderDetailDtos = saleOrderRequestDto.getSaleOrderDetails();
+        List<SaleOrderDetail> saleOrderDetails = saleOrderDetailConverter.convertModelToEntity(saleOrderDetailDtos, authUser);
+
+        Double totalOriginalPrice = 0d, totalSalePrice =0d;
+        if(!CollectionUtils.isEmpty(saleOrderDetails)){
+            for(SaleOrderDetail saleOrderDetail : saleOrderDetails){
+                Double originalPrice = saleOrderDetail.getOriginalPrice();
+                totalOriginalPrice += originalPrice;
+                Double salePrice = originalPrice + (originalPrice * saleOrderDetail.getTaxPrice() / 100.0);
+                saleOrderDetail.setSalePrice(salePrice);
+                totalSalePrice += salePrice;
+            }
+        }
+        saleOrderDetailRepo.saveAll(saleOrderDetails);
+
+        SaleOrderDto saleOrderDto = saleOrderRequestDto.getSaleOrder();
+        saleOrderDto.setTotalPrice(totalSalePrice);
+        saleOrderDto.setTotalTax(totalSalePrice - totalOriginalPrice);
+
+        saleOrderRepo.save(saleOrderConverter.convertModelToEntity(saleOrderDto, authUser));
+        return "success";
     }
 }
