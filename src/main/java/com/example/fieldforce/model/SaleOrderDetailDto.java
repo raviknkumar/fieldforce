@@ -16,7 +16,7 @@ public class SaleOrderDetailDto {
     private String itemName;
     private Double salePrice;
     private Double taxPrice;
-    private Double purchasePrice;
+    private Double originalPrice;
     private Integer pieces;
     private Integer boxes;
     private Double discount;
