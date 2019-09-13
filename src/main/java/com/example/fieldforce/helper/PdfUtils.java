@@ -1,6 +1,7 @@
 package com.example.fieldforce.helper;
 
 import com.example.fieldforce.entity.SaleOrderDetail;
+import com.example.fieldforce.exception.FfaException;
 import com.example.fieldforce.model.ItemDto;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
@@ -55,10 +56,13 @@ public class PdfUtils {
             doc.add(createTable(saleOrderDetails));
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new FfaException(e.getMessage());
         } catch (DocumentException e) {
-            e.printStackTrace();
-        } finally {
+            throw new FfaException(e.getMessage());
+        } catch (Exception e){
+            throw new FfaException(e.getMessage());
+        }
+        finally {
             if (doc != null) {
                 doc.close();
             }
@@ -80,7 +84,7 @@ public class PdfUtils {
 
         PdfPTable table = new PdfPTable(SODheaders.length);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{2, 1, 1, 1, 1, 1, 1});
+        table.setWidths(new int[]{2, 1, 1, 1, 1, 1});
 
         PdfPCell cell;
 

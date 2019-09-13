@@ -174,9 +174,6 @@ public class SaleOrderService {
 
         List<String[]> dataList = new ArrayList<>();
         for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
-            ItemDto itemDto = itemIdToItemMap.get(saleOrderDetail.getItemId());
-            saleOrderDetail.setOriginalPrice(itemDto.getBoxPrice());
-            saleOrderDetail.setTaxPrice(itemDto.getTaxPercent());
             dataList.add(getSODDataAsStringArray(saleOrderDetail));
         }
         ExcelUtils.writeDataToSheet(xssfSheet, SODheaders, dataList);
