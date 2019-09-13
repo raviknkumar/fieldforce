@@ -16,11 +16,7 @@ import java.util.Map;
 @Service
 public class PdfUtils {
 
-    static String SODheaders[] = new String[]{"Item Name", "Pieces", "Boxes", "Price", "Tax", "Amount"};
-
-    private BaseFont bfBold;
-    private BaseFont bf;
-    private BaseFont tf;
+    static String SODheaders[] = new String[]{"Item", "Pieces", "Boxes", "Price", "Tax", "Amount"};
     private Integer HEADER_FONT_SIZE = 16;
 
     public void createPDF(String path, String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails
@@ -30,7 +26,6 @@ public class PdfUtils {
         Document doc = new Document(rectangleReadOnly);
 
         PdfWriter docWriter = null;
-        initializeFonts();
 
         try {
             docWriter = PdfWriter.getInstance(doc, new FileOutputStream(path));
@@ -81,22 +76,11 @@ public class PdfUtils {
         }
     }
 
-    private void initializeFonts() {
-        try {
-            bfBold = BaseFont.createFont(BaseFont.HELVETICA_BOLD, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     private PdfPTable createTable(List<SaleOrderDetail> saleOrderDetails) throws DocumentException {
 
         PdfPTable table = new PdfPTable(SODheaders.length);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{2, 1, 1, 1, 1, 1});
+        table.setWidths(new int[]{2, 1, 1, 1, 1, 1, 1});
 
         PdfPCell cell;
 
@@ -112,11 +96,14 @@ public class PdfUtils {
         Font font = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
 
         for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
+            //itemName
             cell = createCell(saleOrderDetail.getItemName(), font);
             table.addCell(cell);
+            //pieces
             Integer pieces = saleOrderDetail.getPieces();
             cell = createCell(pieces!=null ? pieces.toString() : "0", font);
             table.addCell(cell);
+            //boxes
             Integer boxes = saleOrderDetail.getBoxes();
             cell = createCell(boxes!=null ? boxes.toString() : "0", font);
             table.addCell(cell);

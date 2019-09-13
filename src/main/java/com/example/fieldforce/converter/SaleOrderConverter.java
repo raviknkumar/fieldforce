@@ -19,7 +19,7 @@ public class SaleOrderConverter implements Converter<SaleOrder, SaleOrderDto> {
                 .shopId(model.getShopId())
                 .orderDate(model.getOrderDate())
                 .totalPrice(model.getTotalPrice())
-                .totalTax(model.getTotalPrice())
+                .totalTax(model.getTotalTax())
                 .delieveryCharge(model.getDelieveryCharge())
                 .build();
 
@@ -44,7 +44,7 @@ public class SaleOrderConverter implements Converter<SaleOrder, SaleOrderDto> {
                 .shopId(entity.getShopId())
                 .orderDate(entity.getOrderDate())
                 .totalPrice(entity.getTotalPrice())
-                .totalTax(entity.getTotalPrice())
+                .totalTax(entity.getTotalTax())
                 .delieveryCharge(entity.getDelieveryCharge())
                 .build();
     }
