@@ -209,26 +209,35 @@ public class SaleOrderService {
     }
 
     public String savePrice(SaleOrderRequestDto saleOrderRequestDto, AuthUser authUser) {
+
         List<SaleOrderDetailDto> saleOrderDetailDtos = saleOrderRequestDto.getSaleOrderDetails();
-        List<SaleOrderDetail> saleOrderDetails = saleOrderDetailConverter.convertModelToEntity(saleOrderDetailDtos, authUser);
+        List<SaleOrderDetail> saleOrderDetails = saleOrderDetailRepo.findAllBySaleOrderId(saleOrderRequestDto.getSaleOrder().getId());
+        Map<Integer, SaleOrderDetail> saleOrderDetailMap = saleOrderDetails.stream().collect(Collectors.toMap(s -> s.getId(), Function.identity()));
 
         Double totalOriginalPrice = 0d, totalSalePrice =0d;
-        if(!CollectionUtils.isEmpty(saleOrderDetails)){
-            for(SaleOrderDetail saleOrderDetail : saleOrderDetails){
-                Double originalPrice = saleOrderDetail.getOriginalPrice();
+        if(!CollectionUtils.isEmpty(saleOrderDetailDtos)){
+            for(SaleOrderDetailDto saleOrderDetailDto : saleOrderDetailDtos){
+                Double originalPrice = saleOrderDetailDto.getOriginalPrice();
                 totalOriginalPrice += originalPrice;
-                Double salePrice = originalPrice + (originalPrice * saleOrderDetail.getTaxPrice() / 100.0);
-                saleOrderDetail.setSalePrice(salePrice);
+                Double salePrice = originalPrice + (originalPrice * saleOrderDetailDto.getTaxPrice() / 100.0);
+                saleOrderDetailDto.setSalePrice(salePrice);
                 totalSalePrice += salePrice;
             }
+        }
+
+        for(SaleOrderDetailDto saleOrderDetailDto : saleOrderDetailDtos){
+            saleOrderDetailConverter.applyChanges(saleOrderDetailMap.get(saleOrderDetailDto.getId()), saleOrderDetailDto, authUser);
         }
         saleOrderDetailRepo.saveAll(saleOrderDetails);
 
         SaleOrderDto saleOrderDto = saleOrderRequestDto.getSaleOrder();
+        Optional<SaleOrder> saleOrderOptional = saleOrderRepo.findById(saleOrderRequestDto.getSaleOrder().getId());
+
         saleOrderDto.setTotalPrice(totalSalePrice);
         saleOrderDto.setTotalTax(totalSalePrice - totalOriginalPrice);
-
-        saleOrderRepo.save(saleOrderConverter.convertModelToEntity(saleOrderDto, authUser));
+        SaleOrder saleOrder = saleOrderOptional.get();
+        saleOrderConverter.applyChanges(saleOrder, saleOrderDto, authUser);
+        saleOrderRepo.save(saleOrder);
         return "success";
     }
 }
