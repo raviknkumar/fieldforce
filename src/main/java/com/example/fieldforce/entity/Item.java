@@ -15,7 +15,7 @@ import javax.persistence.UniqueConstraint;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "item")
-@Table(uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
+@Table(uniqueConstraints={@UniqueConstraint(name = "item_name_unique", columnNames={"name"})})
 public class Item extends BaseEntity{
 
     @Column(name = "name")
