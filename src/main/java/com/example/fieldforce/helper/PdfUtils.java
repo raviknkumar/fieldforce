@@ -73,11 +73,11 @@ public class PdfUtils {
     }
 
     private void setSaleOrderDetails(List<SaleOrderDetail> saleOrderDetails, Map<Integer, ItemDto> itemIdToItemMap) {
-        for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
+        /*for (SaleOrderDetail saleOrderDetail : saleOrderDetails) {
             ItemDto itemDto = itemIdToItemMap.get(saleOrderDetail.getItemId());
             saleOrderDetail.setOriginalPrice(itemDto.getBoxPrice());
             saleOrderDetail.setTaxPrice(itemDto.getTaxPercent());
-        }
+        }*/
     }
 
     private PdfPTable createTable(List<SaleOrderDetail> saleOrderDetails) throws DocumentException {

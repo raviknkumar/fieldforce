@@ -146,7 +146,7 @@ public class SaleOrderService {
         Map<Integer, ItemDto> itemIdToItemMap = itemDtos.stream().collect(Collectors.toMap(ItemDto::getId, Function.identity()));
 
         if(type.equals("excel")) {
-            createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails, itemIdToItemMap);
+            createExcelFile(saleOrder.getShopName(), orderDate, saleOrderDetails);
             return true;
         }
         else {
@@ -162,8 +162,7 @@ public class SaleOrderService {
 
     }
 
-    private XSSFWorkbook createExcelFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails
-            , Map<Integer, ItemDto> itemIdToItemMap) throws Exception {
+    private XSSFWorkbook createExcelFile(String shopName, String orderDate, List<SaleOrderDetail> saleOrderDetails) throws Exception {
         String headers1[] = new String[]{shopName, orderDate};
 
         XSSFWorkbook xssfWorkbook = ExcelUtils.getNewXSSFWorkbook();

@@ -12,11 +12,10 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "shop")
-@Table(indexes = { @Index(name = "street_index", columnList = "street") },
-        uniqueConstraints={@UniqueConstraint(columnNames={"name"})})
+@Table(indexes = { @Index(name = "street_index", columnList = "street") })
 public class Shop extends BaseEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @Column(name = "street")
