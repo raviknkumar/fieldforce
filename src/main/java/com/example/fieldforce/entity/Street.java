@@ -18,7 +18,7 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints={@UniqueConstraint(name = "street_name_unique", columnNames={"name"})})
 public class Street extends BaseEntity {
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
 }
