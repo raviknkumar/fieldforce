@@ -74,13 +74,13 @@ public class SaleOrderController {
 
         String fileName = shopName+"_"+orderDate+".";
         if(type.equals("excel"))
-            fileName+="xlsx";
+            fileName+="XLSX";
         else
-            fileName+="pdf";
+            fileName+="PDF";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+fileName +"\"")
                 .body(resource);
     }
 
