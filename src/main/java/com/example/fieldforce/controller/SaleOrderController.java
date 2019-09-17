@@ -72,9 +72,15 @@ public class SaleOrderController {
         byte[] resource = fileStorageService.loadFileAsBytes(filePath);
         String contentType = CONTENT_TYPE_OCTET;
 
+        String fileName = shopName+"_"+orderDate+".";
+        if(type.equals("excel"))
+            fileName+="xlsx";
+        else
+            fileName+="pdf";
+
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName)
                 .body(resource);
     }
 

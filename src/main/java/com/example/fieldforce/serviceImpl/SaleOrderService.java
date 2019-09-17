@@ -117,6 +117,7 @@ public class SaleOrderService {
         List<SaleOrder> saleOrders = saleOrderRepo.findAllByOrderDate(orderDate);
         List<ShopDto> shopDtos = new ArrayList<>();
 
+        /* 1,4 */
         List<ShopDto> shopsByIds = shopService.getShopsByIds(saleOrders.stream().map(SaleOrder::getShopId).collect(Collectors.toList()));
         Map<Integer, ShopDto> shopIdToShopDtoMap = shopsByIds.stream().collect(Collectors.toMap(ShopDto::getId, Function.identity()));
 
