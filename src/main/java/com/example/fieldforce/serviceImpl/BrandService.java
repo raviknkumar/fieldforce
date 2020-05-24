@@ -23,6 +23,7 @@ public class BrandService {
 
     public BrandDto addBrand(BrandDto brandDto, AuthUser authUser) {
         try {
+            // add brand
             Brand brand = brandConverter.convertModelToEntity(brandDto, authUser);
             brand = brandRepo.save(brand);
             return brandConverter.convertEntityToModel(brand);
