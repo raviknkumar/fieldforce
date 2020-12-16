@@ -18,7 +18,7 @@ public class DataSourceConfig {
     @Bean
     @Profile("postgres")
     public DataSource postgresDataSource() {
-        String databaseUrl = "postgres://ihzwfkjpypmuwm:25fe0b41380b357e260a17fc313bf374b84bd4a24cc043598d006e76146bc157@ec2-50-19-254-63.compute-1.amazonaws.com:5432/d9oaqtemjb4ull";
+        String databaseUrl = "postgres://";
         log.info("Initializing PostgreSQL database: {}", databaseUrl);
 
         URI dbUri;
